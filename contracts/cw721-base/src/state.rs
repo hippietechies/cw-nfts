@@ -17,7 +17,10 @@ where
     pub token_count: Item<'a, u64>,
     /// Stored as (granter, operator) giving operator full control over granter's account
     pub operators: Map<'a, (&'a Addr, &'a Addr), Expiration>,
-    pub tokens: IndexedMap<'a, &'a str, TokenInfo<T>, TokenIndexes<'a, T>>,
+    pub tokens: IndexedMap<'a, Vec<u8>, TokenInfo<T>, TokenIndexes<'a, T>>,
+
+    pub owner: Item<'a, Addr>,
+    pub staking_contract: Item<'a, Addr>,
 
     pub(crate) _custom_response: PhantomData<C>,
 }
@@ -37,7 +40,9 @@ where
     fn default() -> Self {
         Self::new(
             "nft_info",
+            "owner",
             "minter",
+            "staking_contract",
             "num_tokens",
             "operators",
             "tokens",
@@ -52,7 +57,9 @@ where
 {
     fn new(
         contract_key: &'a str,
+        owner_key: &'a str,
         minter_key: &'a str,
+        staking_contract_key: &'a str,
         token_count_key: &'a str,
         operator_key: &'a str,
         tokens_key: &'a str,
@@ -63,7 +70,9 @@ where
         };
         Self {
             contract_info: Item::new(contract_key),
+            owner: Item::new(owner_key),
             minter: Item::new(minter_key),
+            staking_contract: Item::new(staking_contract_key),
             token_count: Item::new(token_count_key),
             operators: Map::new(operator_key),
             tokens: IndexedMap::new(tokens_key, indexes),
@@ -122,7 +131,7 @@ pub struct TokenIndexes<'a, T>
 where
     T: Serialize + DeserializeOwned + Clone,
 {
-    pub owner: MultiIndex<'a, Addr, TokenInfo<T>, String>,
+    pub owner: MultiIndex<'a, Addr, TokenInfo<T>, Vec<u8>>,
 }
 
 impl<'a, T> IndexList<TokenInfo<T>> for TokenIndexes<'a, T>

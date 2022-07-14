@@ -11,8 +11,11 @@ use cw721::{
 use cw_storage_plus::Bound;
 use cw_utils::maybe_addr;
 
+use crate::helpers::convert_id_string_to_bytes;
 use crate::msg::{MinterResponse, QueryMsg};
 use crate::state::{Approval, Cw721Contract, TokenInfo};
+
+use std::convert::TryInto;
 
 const DEFAULT_LIMIT: u32 = 10;
 const MAX_LIMIT: u32 = 30;
@@ -32,7 +35,9 @@ where
     }
 
     fn nft_info(&self, deps: Deps, token_id: String) -> StdResult<NftInfoResponse<T>> {
-        let info = self.tokens.load(deps.storage, &token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id)?;
+
+        let info = self.tokens.load(deps.storage, token_id)?;
         Ok(NftInfoResponse {
             token_uri: info.token_uri,
             extension: info.extension,
@@ -46,7 +51,9 @@ where
         token_id: String,
         include_expired: bool,
     ) -> StdResult<OwnerOfResponse> {
-        let info = self.tokens.load(deps.storage, &token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id)?;
+
+        let info = self.tokens.load(deps.storage, token_id)?;
         Ok(OwnerOfResponse {
             owner: info.owner.to_string(),
             approvals: humanize_approvals(&env.block, &info, include_expired),
@@ -89,7 +96,9 @@ where
         spender: String,
         include_expired: bool,
     ) -> StdResult<ApprovalResponse> {
-        let token = self.tokens.load(deps.storage, &token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id)?;
+
+        let token = self.tokens.load(deps.storage, token_id)?;
 
         // token owner has absolute approval
         if token.owner == spender {
@@ -128,7 +137,9 @@ where
         token_id: String,
         include_expired: bool,
     ) -> StdResult<ApprovalsResponse> {
-        let token = self.tokens.load(deps.storage, &token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id)?;
+
+        let token = self.tokens.load(deps.storage, token_id)?;
         let approvals: Vec<_> = token
             .approvals
             .into_iter()
@@ -150,7 +161,7 @@ where
         limit: Option<u32>,
     ) -> StdResult<TokensResponse> {
         let limit = limit.unwrap_or(DEFAULT_LIMIT).min(MAX_LIMIT) as usize;
-        let start = start_after.map(|s| Bound::ExclusiveRaw(s.into()));
+        let start = start_after.map(|s| Bound::ExclusiveRaw(convert_id_string_to_bytes(s).unwrap()));
 
         let owner_addr = deps.api.addr_validate(&owner)?;
         let tokens: Vec<String> = self
@@ -160,6 +171,7 @@ where
             .prefix(owner_addr)
             .keys(deps.storage, start, None, Order::Ascending)
             .take(limit)
+            .map(|item| item.map(|k| u64::from_be_bytes(k.try_into().unwrap()).to_string()))
             .collect::<StdResult<Vec<_>>>()?;
 
         Ok(TokensResponse { tokens })
@@ -171,14 +183,15 @@ where
         start_after: Option<String>,
         limit: Option<u32>,
     ) -> StdResult<TokensResponse> {
+        println!("running alltokens from base");
         let limit = limit.unwrap_or(DEFAULT_LIMIT).min(MAX_LIMIT) as usize;
-        let start = start_after.map(|s| Bound::ExclusiveRaw(s.into()));
+        let start = start_after.map(|s| Bound::ExclusiveRaw(convert_id_string_to_bytes(s).unwrap()));
 
         let tokens: StdResult<Vec<String>> = self
             .tokens
             .range(deps.storage, start, None, Order::Ascending)
             .take(limit)
-            .map(|item| item.map(|(k, _)| k))
+            .map(|item| item.map(|(k, _)| u64::from_be_bytes(k.try_into().unwrap()).to_string()))
             .collect();
 
         Ok(TokensResponse { tokens: tokens? })
@@ -191,7 +204,8 @@ where
         token_id: String,
         include_expired: bool,
     ) -> StdResult<AllNftInfoResponse<T>> {
-        let info = self.tokens.load(deps.storage, &token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id)?;
+        let info = self.tokens.load(deps.storage, token_id)?;
         Ok(AllNftInfoResponse {
             access: OwnerOfResponse {
                 owner: info.owner.to_string(),

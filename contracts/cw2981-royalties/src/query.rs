@@ -1,6 +1,7 @@
 use crate::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
 use crate::Cw2981Contract;
 use cosmwasm_std::{Decimal, Deps, StdResult, Uint128};
+use cw721_base::helpers::{convert_id_string_to_bytes};
 
 /// NOTE: default behaviour here is to round down
 /// EIP2981 specifies that the rounding behaviour is at the discretion of the implementer
@@ -10,7 +11,7 @@ pub fn query_royalties_info(
     sale_price: Uint128,
 ) -> StdResult<RoyaltiesInfoResponse> {
     let contract = Cw2981Contract::default();
-    let token_info = contract.tokens.load(deps.storage, &token_id)?;
+    let token_info = contract.tokens.load(deps.storage, convert_id_string_to_bytes(token_id)?)?;
 
     let royalty_percentage = match token_info.extension {
         Some(ref ext) => match ext.royalty_percentage {

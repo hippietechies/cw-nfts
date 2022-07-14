@@ -1,22 +1,17 @@
-mod contract_tests;
 mod error;
 mod execute;
-pub mod helpers;
 pub mod msg;
 mod query;
 pub mod state;
 
 pub use crate::error::ContractError;
-pub use crate::msg::{ExecuteMsg, InstantiateMsg, MintMsg, MinterResponse, QueryMsg};
-pub use crate::state::Cw721Contract;
-use cosmwasm_std::Empty;
-
-// This is a simple type to let us handle empty extensions
-pub type Extension = Option<Empty>;
+pub use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+pub use crate::state::MarketContract;
 
 #[cfg(not(feature = "library"))]
 pub mod entry {
-    use super::*;
+    use crate::msg::MigrateMsg;
+use super::*;
 
     use cosmwasm_std::entry_point;
     use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
@@ -29,9 +24,7 @@ pub mod entry {
         info: MessageInfo,
         msg: InstantiateMsg,
     ) -> StdResult<Response> {
-        println!("instantiate base:{:?}", msg);
-
-        let tract = Cw721Contract::<Extension, Empty>::default();
+        let tract = MarketContract::default();
         tract.instantiate(deps, env, info, msg)
     }
 
@@ -40,18 +33,21 @@ pub mod entry {
         deps: DepsMut,
         env: Env,
         info: MessageInfo,
-        msg: ExecuteMsg<Extension>,
+        msg: ExecuteMsg,
     ) -> Result<Response, ContractError> {
-        println!("execute base");
-        println!("execute base:{:?}", msg);
-
-        let tract = Cw721Contract::<Extension, Empty>::default();
+        let tract = MarketContract::default();
         tract.execute(deps, env, info, msg)
     }
 
     #[entry_point]
     pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
-        let tract = Cw721Contract::<Extension, Empty>::default();
+        let tract = MarketContract::default();
         tract.query(deps, env, msg)
+    }
+
+    #[entry_point]
+    pub fn migrate(deps: DepsMut, env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {
+        let tract = MarketContract::default();
+        tract.migrate(deps, env, msg)
     }
 }

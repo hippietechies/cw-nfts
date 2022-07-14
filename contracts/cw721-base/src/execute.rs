@@ -1,14 +1,17 @@
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
+use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult, StdError};
 
 use cw2::set_contract_version;
 use cw721::{ContractInfoResponse, CustomMsg, Cw721Execute, Cw721ReceiveMsg, Expiration};
 
 use crate::error::ContractError;
+use crate::helpers::convert_id_string_to_bytes;
 use crate::msg::{ExecuteMsg, InstantiateMsg, MintMsg};
 use crate::state::{Approval, Cw721Contract, TokenInfo};
+
+use std::convert::TryInto;
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:cw721-base";
@@ -86,6 +89,8 @@ where
         info: MessageInfo,
         msg: MintMsg<T>,
     ) -> Result<Response<C>, ContractError> {
+        println!("minting from base: {:?}", msg.owner);
+
         let minter = self.minter.load(deps.storage)?;
 
         if info.sender != minter {
@@ -99,8 +104,10 @@ where
             token_uri: msg.token_uri,
             extension: msg.extension,
         };
+        let token_id = convert_id_string_to_bytes(msg.token_id.to_string())?;
+
         self.tokens
-            .update(deps.storage, &msg.token_id, |old| match old {
+            .update(deps.storage, token_id, |old| match old {
                 Some(_) => Err(ContractError::Claimed {}),
                 None => Ok(token),
             })?;
@@ -175,6 +182,7 @@ where
         token_id: String,
         expires: Option<Expiration>,
     ) -> Result<Response<C>, ContractError> {
+        println!("approving from base");
         self._update_approvals(deps, &env, &info, &spender, &token_id, true, expires)?;
 
         Ok(Response::new()
@@ -209,6 +217,7 @@ where
         operator: String,
         expires: Option<Expiration>,
     ) -> Result<Response<C>, ContractError> {
+        println!("approve_all!!: {:?}", operator);
         // reject expired data as invalid
         let expires = expires.unwrap_or_default();
         if expires.is_expired(&env.block) {
@@ -250,16 +259,18 @@ where
         info: MessageInfo,
         token_id: String,
     ) -> Result<Response<C>, ContractError> {
-        let token = self.tokens.load(deps.storage, &token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id.to_string())?;
+
+        let token = self.tokens.load(deps.storage, token_id.to_vec())?;
         self.check_can_send(deps.as_ref(), &env, &info, &token)?;
 
-        self.tokens.remove(deps.storage, &token_id)?;
+        self.tokens.remove(deps.storage, token_id.to_vec())?;
         self.decrement_tokens(deps.storage)?;
 
         Ok(Response::new()
             .add_attribute("action", "burn")
             .add_attribute("sender", info.sender)
-            .add_attribute("token_id", token_id))
+            .add_attribute("token_id", u64::from_be_bytes(token_id.try_into().unwrap()).to_string()))
     }
 }
 
@@ -277,7 +288,9 @@ where
         recipient: &str,
         token_id: &str,
     ) -> Result<TokenInfo<T>, ContractError> {
-        let mut token = self.tokens.load(deps.storage, token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id.to_string())?;
+
+        let mut token = self.tokens.load(deps.storage, token_id.to_vec())?;
         // ensure we have permissions
         self.check_can_send(deps.as_ref(), env, info, &token)?;
         // set owner and remove existing approvals
@@ -299,7 +312,9 @@ where
         add: bool,
         expires: Option<Expiration>,
     ) -> Result<TokenInfo<T>, ContractError> {
-        let mut token = self.tokens.load(deps.storage, token_id)?;
+        let token_id = convert_id_string_to_bytes(token_id.to_string())?;
+
+        let mut token = self.tokens.load(deps.storage, token_id.to_vec())?;
         // ensure we have permissions
         self.check_can_approve(deps.as_ref(), env, info, &token)?;
 

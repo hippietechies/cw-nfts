@@ -1,5 +1,5 @@
 use crate::{ExecuteMsg, QueryMsg};
-use cosmwasm_std::{to_binary, Addr, CosmosMsg, QuerierWrapper, StdResult, WasmMsg, WasmQuery};
+use cosmwasm_std::{to_binary, Addr, CosmosMsg, QuerierWrapper, StdResult, WasmMsg, WasmQuery, StdError};
 use cw721::{
     AllNftInfoResponse, Approval, ApprovalResponse, ApprovalsResponse, ContractInfoResponse,
     NftInfoResponse, NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
@@ -175,5 +175,15 @@ impl Cw721Contract {
     /// returns true if the contract supports the enumerable extension
     pub fn has_enumerable(&self, querier: &QuerierWrapper) -> bool {
         self.tokens(querier, self.addr(), None, Some(1)).is_ok()
+    }
+}
+
+pub fn convert_id_string_to_bytes(token_id: String) -> StdResult<Vec<u8>> {
+    println!("convert_id_string_to_bytes: {:?}", token_id);
+    let parsed = token_id.parse::<u64>();
+
+    match parsed {
+        Ok(_) => Ok(parsed.unwrap().to_be_bytes().to_vec()),
+        Err(_) => Err(StdError::parse_err(token_id, "token_id should be digit string"))
     }
 }
