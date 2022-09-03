@@ -15,6 +15,7 @@ use cw721_base::msg::ExecuteMsg as CW721ExecuteMsg;
 use crate::msg::{LunaPunkExecuteMsg, MigrateMsg};
 use crate::state::{Cw721ExtendedContract, Extension, Metadata, Trait};
 
+use base64::encode;
 use std::convert::TryFrom;
 use std::collections::HashMap;
 use bech32::Bech32;
@@ -45,8 +46,8 @@ pub fn instantiate(
     let minter = deps.api.addr_validate(&msg.minter)?;
     contract.minter.save(deps.storage, &minter)?;
 
-    let staking_addr = deps.api.addr_validate(&"terra14ayqtv6ck5w0u8slpgjp7wkvve9j066aqzgksn".to_string())?;
-    contract.staking_contract.save(deps.storage, &staking_addr)?;
+    // let staking_addr = deps.api.addr_validate(&"terra14ayqtv6ck5w0u8slpgjp7wkvve9j066aqzgksn".to_string())?;
+    // contract.staking_contract.save(deps.storage, &staking_addr)?;
 
     if msg.name == "LunaPunks" {
         let addresses: Vec<String> = vec![
@@ -106,6 +107,10 @@ pub fn mint(
     let address = generate_address(msg.owner.as_str(), _env.block.time.nanos().wrapping_add(count)).to_string().unwrap();
     // create the token
     let response = generate_image(address, _env.block.time.seconds().to_string());
+
+    let mut image_date: String = "data:image/svg+xml;base64,".to_string();
+    image_date.push_str(&encode(response.0));
+
     let token = TokenInfo {
         owner: deps.api.addr_validate(&msg.owner)?,
         approvals: vec![],
@@ -114,7 +119,7 @@ pub fn mint(
         extension: Some(Metadata {
             description: Some("On Chain Luna Punks, only 1 single randomly generated Unique Luna Punk per Terra address!".to_string()),
             name: Some(format!("LunaPunks: #{}", token_id.clone())),
-            image_data: Some(response.0),
+            image_data: Some(image_date),
             attributes: Some(response.1),
             image: None,
             external_url: Some("https://lunapunks.io/".to_string()),

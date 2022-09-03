@@ -4,7 +4,6 @@ use cw2::get_contract_version;
 use cw0::NativeBalance;
 use crate::state::{Token, BagOfCoins, State};
 use std::ops::Sub;
-use cw_storage_plus::U32Key;
 
 use cosmwasm_std::{Order, Coin, Addr, Uint128, WasmQuery, WasmMsg, to_binary, CosmosMsg, QueryRequest, BankMsg, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
 
@@ -29,7 +28,7 @@ impl<'a> MarketContract<'a> {
     ) -> StdResult<Response> {
         let state = State {
             contract: deps.api.addr_validate(&msg.contract)?,
-            staking_contract: deps.api.addr_validate("terra14ayqtv6ck5w0u8slpgjp7wkvve9j066aqzgksn")?, // 1% platform fee
+            staking_contract: deps.api.addr_validate(&msg.staking_contract)?, // 1% platform fee
             owner: info.sender.clone(),
             platform_fee: 100, // 1% platform fee
             platform_wallet: deps.api.addr_validate("terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg")?, // 1% platform fee
@@ -60,6 +59,7 @@ impl<'a> MarketContract<'a> {
             ExecuteMsg::AskAddNft { token_id, ask_funds, expires } => self.ask_add_nft(deps, env, info, token_id, ask_funds, expires),
             ExecuteMsg::AskWithdrawNft { token_id } => self.ask_withdraw_nft(deps, info, token_id),
             ExecuteMsg::AskAcceptNft { token_id } => self.ask_accept_nft(deps, env, info, token_id),
+            ExecuteMsg::SetStakingContract { staking_contract } => self.set_staking_contract(deps, info, staking_contract),
             ExecuteMsg::SetRoyaltyWallet { royalty_wallet } => self.set_royalty_wallet(deps, info, royalty_wallet),
             ExecuteMsg::SetRoyaltyFee { royalty_fee } => self.set_royalty_fee(deps, info, royalty_fee),
         }
@@ -192,7 +192,7 @@ impl<'a> MarketContract<'a>
         self.token_map.save(deps.storage, token_id.into(), &token)?;
         self.bid_map.save(deps.storage, (info.sender.clone(), token_id.to_string().as_bytes().to_vec()), &token)?;
 
-        let state = &self.state.load(deps.storage)?;
+        // let state = &self.state.load(deps.storage)?;
         // msgs.push(self.get_revest_msg(state.staking_contract.to_string())?.into());
 
         // set new bid
@@ -354,7 +354,7 @@ impl<'a> MarketContract<'a>
         );
 
         let state = &self.state.load(deps.storage)?;
-        // messages.push(self.get_revest_msg(state.staking_contract.to_string())?.into());
+        messages.push(self.get_revest_msg(state.staking_contract.to_string())?.into());
 
         // send coins to owner
         Ok(Response::new()
@@ -391,7 +391,7 @@ impl<'a> MarketContract<'a>
             bids: vec![],
         });
         token.ask = Some(bag);
-        self.token_map.save(deps.storage, U32Key::from(token_id), &token)?;
+        self.token_map.save(deps.storage, token_id, &token)?;
 
         // self.token_map
         //     .update(deps.storage, U32Key::from(token_id), |old| match old {
@@ -434,9 +434,9 @@ impl<'a> MarketContract<'a>
             bids: vec![],
         });
         token.ask = None;
-        self.token_map.save(deps.storage, U32Key::from(token_id), &token)?;
+        self.token_map.save(deps.storage, token_id, &token)?;
 
-        let state = &self.state.load(deps.storage)?;
+        // let state = &self.state.load(deps.storage)?;
 
         Ok(Response::new()
             // .add_message(self.get_revest_msg(state.staking_contract.to_string())?)
@@ -506,7 +506,7 @@ impl<'a> MarketContract<'a>
 
         // save state
         token.ask = None;
-        self.token_map.save(deps.storage, U32Key::from(token_id), &token)?;
+        self.token_map.save(deps.storage, token_id, &token)?;
 
         let mut msgs: Vec<CosmosMsg> = vec![];
         // send funds of winning bid to owner of nft
@@ -554,7 +554,7 @@ impl<'a> MarketContract<'a>
             .into(),
         );
         let state = &self.state.load(deps.storage)?;
-        // msgs.push(self.get_revest_msg(state.staking_contract.to_string())?.into());
+        msgs.push(self.get_revest_msg(state.staking_contract.to_string())?.into());
 
         // send coins to owner
         Ok(Response::new()
@@ -622,6 +622,26 @@ impl<'a> MarketContract<'a>
         }
 
         Ok(reply)
+    }
+
+    pub fn set_staking_contract(
+        &self,
+        deps: DepsMut,
+        info: MessageInfo,
+        staking_contract: String,
+    ) -> Result<Response, ContractError> {
+        let state = self.state.load(deps.storage)?;
+        self.check_owner(state.owner, info.sender.clone())?;
+
+        let staking_contract_addr = deps.api.addr_validate(&staking_contract)?;
+        self.state.update(deps.storage, |mut state| -> Result<_, ContractError> {
+            state.staking_contract = staking_contract_addr.clone();
+            Ok(state)
+        })?;
+
+        Ok(Response::new()
+        .add_attribute("value", staking_contract_addr.to_string())
+        .add_attribute("method", "set_staking_contract"))
     }
 
     pub fn set_royalty_wallet(

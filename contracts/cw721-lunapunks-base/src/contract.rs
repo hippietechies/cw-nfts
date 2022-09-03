@@ -2,7 +2,7 @@
 pub use crate::msg::{LunaPunkExecuteMsg, LunaPunkQueryMsg, MigrateMsg};
 pub use crate::state::{Cw721ExtendedContract,Extension};
 use crate::execute::{mint, instantiate as instantiate_luna_punks_contract, release};
-use crate::query::{all_tokens, staking_contract, tokens};
+use crate::query::{all_tokens, tokens, owner_tokens};
 
 use super::*;
 
@@ -50,7 +50,11 @@ pub fn query(deps: Deps, env: Env, msg: LunaPunkQueryMsg) -> StdResult<Binary> {
   println!("query:{:?}", msg);
 
   match msg {
-      LunaPunkQueryMsg::StakingContract { } => to_binary(&staking_contract(deps)?),
+      // LunaPunkQueryMsg::StakingContract { } => to_binary(&staking_contract(deps)?),
+
+      LunaPunkQueryMsg::OwnerTokens { owner, start_after } => {
+          to_binary(&owner_tokens(deps, owner, start_after)?)
+      },
       LunaPunkQueryMsg::Tokens {
           owner, start_after, skip, limit
       } => to_binary(&tokens(deps, owner, start_after, skip, limit)?),

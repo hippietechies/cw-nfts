@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "contract",
+    "max_mint",
+    "max_supply",
+    "mint_limit",
+    "nft_description",
+    "nft_name",
+    "price",
+    "public_mint_height"
+  ],
+  "properties": {
+    "animation_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "background_color": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contract": {
+      "type": "string"
+    },
+    "external_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "image_ipfs": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_mint": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
+    },
+    "max_supply": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "mint_limit": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
+    },
+    "nft_description": {
+      "type": "string"
+    },
+    "nft_name": {
+      "type": "string"
+    },
+    "price": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "public_mint_height": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "token_uri": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "whitelist_password": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "youtube_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

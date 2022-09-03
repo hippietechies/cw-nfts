@@ -22,14 +22,37 @@ const DEFAULT_PAGE: u32 = 0;
 const MAX_LIMIT: u32 = 30;
 
 
-pub fn staking_contract(deps: Deps) -> StdResult<StakingContractResponse> {
+// pub fn staking_contract(deps: Deps) -> StdResult<StakingContractResponse> {
+//     let contract = Cw721ExtendedContract::default();
+
+//     let staking_addr = contract.staking_contract.load(deps.storage)?;
+//     Ok(StakingContractResponse {
+//         contract: staking_addr.to_string(),
+//     })
+// }
+
+pub fn owner_tokens(
+    deps: Deps,
+    owner: String,
+    start_after: Option<String>,
+) -> StdResult<NumTokensResponse> {
+    let owner_addr = deps.api.addr_validate(&owner)?;
+    let start = start_after.map(Bound::exclusive);
     let contract = Cw721ExtendedContract::default();
 
-    let staking_addr = contract.staking_contract.load(deps.storage)?;
-    Ok(StakingContractResponse {
-        contract: staking_addr.to_string(),
+    let count: u64 = contract
+        .tokens
+        .idx
+        .owner
+        .prefix(owner_addr)
+        .keys(deps.storage, start, None, Order::Ascending)
+        .count() as u64;
+
+    Ok(NumTokensResponse {
+        count,
     })
 }
+
 
 pub fn tokens(
     deps: Deps,
@@ -90,6 +113,8 @@ pub fn all_tokens(
 
     Ok(TokensResponse { tokens: tokens? })
 }
+
+
 
 
 // impl<'a> Cw721Query<Extension> for Cw721ExtendedContract<'a>

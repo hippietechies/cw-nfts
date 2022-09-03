@@ -151,7 +151,7 @@ impl<'a> MarketContract<'a>
     ) -> StdResult<AllNftPriceMapResponse> {
         let limit_usize = self.calc_limit(limit);
         let skip_usize = self.calc_skip(skip, limit_usize);
-        let start = Some(Bound::Exclusive(((start_after.unwrap_or("0")).parse::<u128>(), PhantomData)));
+        let start = Some(Bound::Exclusive(((start_after.clone().unwrap_or("0".to_string()).parse::<u128>().unwrap().to_be_bytes().to_vec(), 0u32.to_be_bytes().to_vec()), PhantomData)));
 
         // let order = Order::try_from(1i32);
         let order = Order::try_from(ascending.unwrap_or(1i32))?;

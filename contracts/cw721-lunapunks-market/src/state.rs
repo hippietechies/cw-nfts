@@ -124,10 +124,10 @@ fn get_coins(coins: &[Coin], denom: &str) -> u128 {
 fn token_ask_price_token_id_idx(token: &Token) -> (Vec<u8>, Vec<u8>) {
     match token.ask.as_ref() {
         Some(ask) => {
-            return (get_coins(&ask.bag,"uluna"), U32Key::new(token.token_id).wrapped)
+            return (get_coins(&ask.bag,"uluna").to_be_bytes().to_vec(), token.token_id.to_be_bytes().to_vec())
         },
         None => {
-            return (U128Key::new(0).wrapped, U32Key::new(token.token_id).wrapped)
+            return (0u128.to_be_bytes().to_vec(), token.token_id.to_be_bytes().to_vec())
         }
     }
 }
@@ -169,7 +169,7 @@ pub struct AllNftMarketInfoResponse {
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct AllNftPriceMapResponse {
     pub tokens: Vec<Token>,
-    pub start_after: Option<u32>,
+    pub start_after: Option<String>,
     pub limit: String,
     pub skip: String,
     pub count: Option<String>,

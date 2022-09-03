@@ -126,7 +126,7 @@ pub enum LunaPunkQueryMsg {
     },
     /// Total number of tokens issued
     NumTokens {},
-    StakingContract {},
+    // StakingContract {},
     OwnerTokens {
         owner: String,
         start_after: Option<String>,

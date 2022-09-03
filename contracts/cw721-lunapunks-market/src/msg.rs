@@ -14,6 +14,7 @@ pub enum StakingMsg {
 pub struct InstantiateMsg {
     /// Address of the NFT contract
     pub contract: String,
+    pub staking_contract: String,
     /// 1000 = 10% max royalty fee, 1000, with 2 decimals ~0.01
     pub royalty_fee: u32,
     pub royalty_wallet: String,
@@ -40,6 +41,7 @@ pub enum ExecuteMsg {
     /// Accepts a bid for bag of coins for NFT
     AskAcceptNft { token_id: u32 },
 
+    SetStakingContract { staking_contract: String },
     SetRoyaltyWallet { royalty_wallet: String },
     SetRoyaltyFee { royalty_fee: u32 },
     // /// Transfers NFT to escrow contract
@@ -79,7 +81,7 @@ pub enum QueryMsg {
         /// unset or false will filter out expired approvals, you must set to true to see them
         ascending: Option<i32>,
         include_expired: Option<bool>,
-        start_after: Option<u32>,
+        start_after: Option<String>,
         skip: Option<u32>,
         limit: Option<u32>,
     },
