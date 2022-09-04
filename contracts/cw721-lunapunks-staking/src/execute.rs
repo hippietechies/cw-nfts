@@ -328,12 +328,6 @@ impl<'a> StakingContract<'a>
         });
 
         let mut messages: Vec<CosmosMsg> = vec![];
-        messages.push(WasmMsg::Execute {
-            contract_addr: env.contract.address.to_string(),
-            msg: to_binary(&ExecuteMsg::Revest {})?,
-            funds: vec![],
-        }.into());
-
         let reply: StdResult<DelegationResponse> = deps.querier.query(&response);
 
         if reply.is_ok() {
@@ -342,7 +336,7 @@ impl<'a> StakingContract<'a>
                 Some(delegation) => {
                     messages.push(StakingMsg::Redelegate {
                         src_validator: state.validator.to_string(),
-                        dst_validator: state.validator.to_string(),
+                        dst_validator: validator.to_string(),
                         amount: delegation.can_redelegate.clone(),
                     }.into());
                 },
