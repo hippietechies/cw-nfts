@@ -1,8 +1,7 @@
 use cosmwasm_std::Coin;
-use cw0::NativeBalance;
+use cw721::Expiration;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use cw0::Expiration;
 
 use cosmwasm_std::Addr;
 use cw_storage_plus::{Item, Map};

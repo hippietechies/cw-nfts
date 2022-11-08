@@ -3,7 +3,6 @@ use cw2::get_contract_version;
 use cw0::NativeBalance;
 use crate::state::{Token, BagOfCoins, State};
 use std::ops::Sub;
-use cw_storage_plus::U32Key;
 
 use cosmwasm_std::{Coin, Addr, Uint128, WasmQuery, WasmMsg, to_binary, CosmosMsg, QueryRequest, BankMsg, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
 
@@ -339,7 +338,7 @@ impl<'a> MarketContract<'a>
             bids: vec![],
         });
         token.ask = Some(bag);
-        self.token_map.save(deps.storage, U32Key::from(token_id), &token)?;
+        self.token_map.save(deps.storage, token_id, &token)?;
 
         // self.token_map
         //     .update(deps.storage, U32Key::from(token_id), |old| match old {
@@ -379,7 +378,7 @@ impl<'a> MarketContract<'a>
             bids: vec![],
         });
         token.ask = None;
-        self.token_map.save(deps.storage, U32Key::from(token_id), &token)?;
+        self.token_map.save(deps.storage, token_id, &token)?;
 
         Ok(Response::new()
             .add_attribute("action", "ask_withdraw_nft")
@@ -447,7 +446,7 @@ impl<'a> MarketContract<'a>
 
         // save state
         token.ask = None;
-        self.token_map.save(deps.storage, U32Key::from(token_id), &token)?;
+        self.token_map.save(deps.storage, token_id, &token)?;
 
         let mut msgs: Vec<CosmosMsg> = vec![];
         // send funds of winning bid to owner of nft

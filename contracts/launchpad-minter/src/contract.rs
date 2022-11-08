@@ -1,9 +1,9 @@
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::Uint128;
+use cw721::Expiration;
 use crate::msg::ExecuteMsg::Release;
 use crate::msg::{MintInfoResponse};
 use cosmwasm_std::Coin;
-use cw0::NativeBalance;
 use crate::msg::UpdateConfigMsg;
 use crate::msg::MaxMintResponse;
 use cosmwasm_std::entry_point;
@@ -12,7 +12,6 @@ use cosmwasm_std::{
     QueryRequest, Response, StdResult, WasmMsg, WasmQuery,
 };
 
-use cw0::Expiration;
 use cw2::set_contract_version;
 
 use crate::error::ContractError;

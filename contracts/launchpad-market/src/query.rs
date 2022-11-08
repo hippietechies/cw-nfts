@@ -138,18 +138,17 @@ impl<'a> MarketContract<'a>
     ) -> StdResult<AllNftPriceMapResponse> {
         let limit_usize = self.calc_limit(limit);
         let skip_usize = self.calc_skip(skip, limit_usize);
-        let start = Some(Bound::Exclusive(((start_after.clone().unwrap_or("0".to_string()).parse::<u128>().unwrap().to_be_bytes().to_vec(), 0u32.to_be_bytes().to_vec()), PhantomData)));
+        let start = Some(Bound::Exclusive(((start_after.clone().unwrap_or("1".to_string()).parse::<u128>().unwrap().to_be_bytes().to_vec(), 0u32.to_be_bytes().to_vec()), PhantomData)));
 
         // let order = Order::try_from(1i32);
         let order = Order::try_from(ascending.unwrap_or(1i32))?;
         let res: StdResult<Vec<Token>> = self.token_map
             .idx
             .ask_price_token_id
-            .range(deps.storage, start, None, order)
-            .filter(|item| item.as_ref().and_then(|(_, token)| Ok(token.ask.is_some())).unwrap_or(false))
-            .map(|item| item.and_then(|(_, token)| Ok(token)))
+            .range(deps.storage, start.clone(), None, order)
             .skip(skip_usize)
             .take(limit_usize)
+            .map(|item| item.and_then(|(_, token)| Ok(token)))
             .collect();
 
         let tokens = res.unwrap();
@@ -158,7 +157,8 @@ impl<'a> MarketContract<'a>
             tokens: tokens,
             limit: limit_usize.to_string(),
             skip: skip_usize.to_string(),
-            count: Some(self.token_map.range(deps.storage, None, None, order).filter(|item| item.as_ref().and_then(|(_, token)| Ok(token.ask.is_some())).unwrap_or(false)).count().to_string()),
+            count: Some(self.token_map.idx
+                .ask_price_token_id.range(deps.storage, start, None, order).count().to_string()),
             start_after: start_after,
             is_ask: true,
             is_bids: false,
