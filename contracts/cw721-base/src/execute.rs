@@ -1,10 +1,10 @@
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult, StdError};
+use cosmwasm_std::{Binary, CustomMsg, Deps, DepsMut, Env, MessageInfo, Response, StdResult, StdError};
 
 use cw2::set_contract_version;
-use cw721::{ContractInfoResponse, CustomMsg, Cw721Execute, Cw721ReceiveMsg, Expiration};
+use cw721::{ContractInfoResponse, Cw721Execute, Cw721ReceiveMsg, Expiration};
 
 use crate::error::ContractError;
 use crate::helpers::convert_id_string_to_bytes;
@@ -13,14 +13,16 @@ use crate::state::{Approval, Cw721Contract, TokenInfo};
 
 use std::convert::TryInto;
 
-// version info for migration info
+// Version info for migration
 const CONTRACT_NAME: &str = "crates.io:cw721-base";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-impl<'a, T, C> Cw721Contract<'a, T, C>
+impl<'a, T, C, E, Q> Cw721Contract<'a, T, C, E, Q>
 where
     T: Serialize + DeserializeOwned + Clone,
     C: CustomMsg,
+    E: CustomMsg,
+    Q: CustomMsg,
 {
     pub fn instantiate(
         &self,
@@ -46,7 +48,7 @@ where
         deps: DepsMut,
         env: Env,
         info: MessageInfo,
-        msg: ExecuteMsg<T>,
+        msg: ExecuteMsg<T, E>,
     ) -> Result<Response<C>, ContractError> {
         match msg {
             ExecuteMsg::Mint(msg) => self.mint(deps, env, info, msg),
@@ -72,15 +74,18 @@ where
                 msg,
             } => self.send_nft(deps, env, info, contract, token_id, msg),
             ExecuteMsg::Burn { token_id } => self.burn(deps, env, info, token_id),
+            ExecuteMsg::Extension { msg: _ } => Ok(Response::default()),
         }
     }
 }
 
 // TODO pull this into some sort of trait extension??
-impl<'a, T, C> Cw721Contract<'a, T, C>
+impl<'a, T, C, E, Q> Cw721Contract<'a, T, C, E, Q>
 where
     T: Serialize + DeserializeOwned + Clone,
     C: CustomMsg,
+    E: CustomMsg,
+    Q: CustomMsg,
 {
     pub fn mint(
         &self,
@@ -122,10 +127,12 @@ where
     }
 }
 
-impl<'a, T, C> Cw721Execute<T, C> for Cw721Contract<'a, T, C>
+impl<'a, T, C, E, Q> Cw721Execute<T, C> for Cw721Contract<'a, T, C, E, Q>
 where
     T: Serialize + DeserializeOwned + Clone,
     C: CustomMsg,
+    E: CustomMsg,
+    Q: CustomMsg,
 {
     type Err = ContractError;
 
@@ -275,10 +282,12 @@ where
 }
 
 // helpers
-impl<'a, T, C> Cw721Contract<'a, T, C>
+impl<'a, T, C, E, Q> Cw721Contract<'a, T, C, E, Q>
 where
     T: Serialize + DeserializeOwned + Clone,
     C: CustomMsg,
+    E: CustomMsg,
+    Q: CustomMsg,
 {
     pub fn _transfer_nft(
         &self,
@@ -320,11 +329,7 @@ where
 
         // update the approval list (remove any for the same spender before adding)
         let spender_addr = deps.api.addr_validate(spender)?;
-        token.approvals = token
-            .approvals
-            .into_iter()
-            .filter(|apr| apr.spender != spender_addr)
-            .collect();
+        token.approvals.retain(|apr| apr.spender != spender_addr);
 
         // only difference between approve and revoke
         if add {
