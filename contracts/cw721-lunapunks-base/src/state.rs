@@ -1,4 +1,5 @@
 use cw721_base::Cw721Contract;
+use cw721_metadata_onchain::Cw721MetadataContract;
 use schemars::JsonSchema;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
@@ -9,31 +10,7 @@ use cosmwasm_std::{Addr, BlockInfo, StdResult, Storage, Empty, Coin};
 use cw721::{OwnerOfResponse, NftInfoResponse, ContractInfoResponse, Expiration};
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map, MultiIndex};
 
-pub type Cw721ExtendedContract<'a> = Cw721Contract<'a, Extension, Empty>;
-
-#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug, Default)]
-pub struct Trait {
-    pub display_type: Option<String>,
-    pub trait_type: String,
-    pub value: String,
-}
-
-// see: https://docs.opensea.io/docs/metadata-standards
-#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug, Default)]
-pub struct Metadata {
-    pub image: Option<String>,
-    pub image_data: Option<String>,
-    pub external_url: Option<String>,
-    pub description: Option<String>,
-    pub name: Option<String>,
-    pub attributes: Option<Vec<Trait>>,
-    pub background_color: Option<String>,
-    pub animation_url: Option<String>,
-    pub youtube_url: Option<String>,
-}
-
-pub type Extension = Option<Metadata>;
-
+pub type Cw721ExtendedContract<'a> = Cw721MetadataContract<'a>;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct BagOfCoins {

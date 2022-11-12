@@ -1,3 +1,5 @@
+cargo-features=["workspace-inheritance"]
+
 [package]
 name          = "cw721-fixed-price"
 authors       = ["Vernon Johnson <vtj2105@columbia.edu>"]

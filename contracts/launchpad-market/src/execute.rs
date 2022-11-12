@@ -27,7 +27,7 @@ impl<'a> MarketContract<'a> {
     ) -> Result<Response, ContractError> {
 
         let mut platform_fee = 100;
-        if info.sender.to_string() != "terra1dkeg3uvglsgph0vqwz9ejyaye6nla3d8smlsxl" {
+        if info.sender.to_string() != "terra1fp4hrygfht28u2cv9zxkrnqzu07xvlarp307rmllrjzeejqzh8dsekd95w" {
             return Err(ContractError::Unauthorized {});
             // return Err(ContractError::Unauthorized {});
         }

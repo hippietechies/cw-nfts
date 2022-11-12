@@ -11,11 +11,12 @@ use cw_storage_plus::Bound;
 
 use base64::encode;
 use crate::msg::{LunaPunkQueryMsg};
-use crate::state::{Cw721ExtendedContract, Extension };
+use crate::state::{Cw721ExtendedContract };
 use std::convert::TryInto;
 use std::marker::PhantomData;
 
 use cw721_base::msg::QueryMsg as CW721QueryMsg;
+use cw721_metadata_onchain::Extension;
 
 const DEFAULT_LIMIT: u32 = 10;
 const DEFAULT_PAGE: u32 = 0;
@@ -498,24 +499,24 @@ fn parse_approval(item: StdResult<(Addr, Expiration)>) -> StdResult<cw721::Appro
     })
 }
 
-fn humanize_approvals(
-    block: &BlockInfo,
-    approvals: Vec<Approval>,
-    include_expired: bool,
-) -> Vec<cw721::Approval> {
-    approvals
-        .iter()
-        .filter(|apr| include_expired || !apr.is_expired(block))
-        .map(humanize_approval)
-        .collect()
-}
+// fn humanize_approvals(
+//     block: &BlockInfo,
+//     approvals: Vec<Approval>,
+//     include_expired: bool,
+// ) -> Vec<cw721::Approval> {
+//     approvals
+//         .iter()
+//         .filter(|apr| include_expired || !apr.is_expired(block))
+//         .map(humanize_approval)
+//         .collect()
+// }
 
-fn humanize_approval(approval: &Approval) -> cw721::Approval {
-    cw721::Approval {
-        spender: approval.spender.to_string(),
-        expires: approval.expires,
-    }
-}
+// fn humanize_approval(approval: &Approval) -> cw721::Approval {
+//     cw721::Approval {
+//         spender: approval.spender.to_string(),
+//         expires: approval.expires,
+//     }
+// }
 
 pub fn convert_id_string_to_bytes(token_id: String) -> Vec<u8> {
     print!("token_id:{:?}", token_id);

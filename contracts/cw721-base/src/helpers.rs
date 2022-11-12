@@ -12,8 +12,6 @@ use cw721::{
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use crate::{ExecuteMsg, QueryMsg};
-
 #[cw_serde]
 pub struct Cw721Contract<Q: CustomMsg, E: CustomMsg>(
     pub Addr,
@@ -190,7 +188,7 @@ impl<Q: CustomMsg, E: CustomMsg> Cw721Contract<Q, E> {
 }
 
 pub fn convert_id_string_to_bytes(token_id: String) -> StdResult<Vec<u8>> {
-    println!("convert_id_string_to_bytes: {:?}", token_id);
+    // println!("convert_id_string_to_bytes: {:?}", token_id);
     let parsed = token_id.parse::<u64>();
 
     match parsed {

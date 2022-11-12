@@ -1,3 +1,5 @@
+cargo-features=["workspace-inheritance"]
+
 [package]
 name          = "cw721"
 description   = "Definition and types for the CosmWasm-721 NFT interface"

@@ -1,0 +1,45 @@
+// approve nft spend
+{
+  "approve":
+  {
+      "spender":"terra1dkeg3uvglsgph0vqwz9ejyaye6nla3d8smlsxl",
+      "token_id":"1"
+  }
+}
+
+// launch message
+{
+  "launch": {
+    "nft": {
+      "name": "Luna Bugz",
+      "symbol": "BUGZ"
+    },
+    "minter": {
+      "nft_name": "Luna Bugz",
+      "price_bag": [
+        {
+          "denom": "uluna",
+          "amount": "10"
+        }
+      ],
+      "token_uri": "https://ipfs.lunapunks.io/ipfs/Qmaiz46i8JJTcszoctiiF6sgvfPYWLXXKYiauVNbbziMg6/",
+      "max_supply": 298,
+      "mint_limit": 298,
+      "nft_description": "Appearing randomly in Terra Luna smart contracts.",
+      "public_mint_height": 0
+    },
+    "token_id": "1",
+    "launch_date": "1650385200000000000",
+    "marketplace": {
+      "royalty_fee": 500,
+      "royalty_wallet": "terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg"
+    },
+    "social_links": [
+      "https://twitter.com/LunaBugz",
+      "https://t.me/lunabugz",
+      "https://lunabugz.com/"
+    ],
+    "icon_image_url": "https://ipfs.lunapunks.io/ipfs/QmcYd3ae6wPVgFggasANeaCW895ZMYYxdtzg4hoeTKjhsk/icon.jpg",
+    "banner_image_url": "https://ipfs.lunapunks.io/ipfs/QmcYd3ae6wPVgFggasANeaCW895ZMYYxdtzg4hoeTKjhsk/banner.jpg"
+  }
+}

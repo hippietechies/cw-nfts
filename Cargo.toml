@@ -1,4 +1,10 @@
 [workspace]
+version       = "0.16.0"
+edition       = "2021"
+license       = "Apache-2.0"
+homepage      = "https://cosmwasm.com"
+repository    = "https://github.com/CosmWasm/cw-nfts"
+documentation = "https://docs.cosmwasm.com"
 members = ["packages/cw721/", "contracts/*"]
 
 [workspace.package]
@@ -12,15 +18,23 @@ documentation = "https://docs.cosmwasm.com"
 [workspace.dependencies]
 cosmwasm-schema = "1.1.5"
 cosmwasm-std    = "1.1.5"
+cw0             = "0.10.3"
 cw2             = "0.16.0"
 cw20            = "0.16.0"
-cw721           = { version = "0.16.0", path = "./packages/cw721" }
-cw721-base      = { version = "0.16.0", path = "./contracts/cw721-base" }
+cw721           = { version = "0.16.0", path = "/Users/janantan/Janan/Terra/cw-nfts/packages/cw721" }
+cw721-base      = { version = "0.16.0", path = "/Users/janantan/Janan/Terra/cw-nfts/contracts/cw721-base" }
+cw721-metadata-onchain = { path = "/Users/janantan/Janan/Terra/cw-nfts/contracts/cw721-metadata-onchain", features = [
+  "library",
+] }
 cw-storage-plus = "0.16.0"
 cw-utils        = "0.16.0"
 schemars        = "0.8.10"
 serde           = { version = "1.0.140", default-features = false, features = ["derive"] }
 thiserror       = "1.0.31"
+seahash         = "4.1.0"
+bech32          = "0.2.0"
+base64          = "0.13.1"
+protobuf        = { version = "2", features = ["with-bytes"] }
 
 [profile.release.package.cw721-base]
 codegen-units = 1

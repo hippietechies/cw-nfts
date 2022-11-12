@@ -13,7 +13,8 @@ use cw721::{ContractInfoResponse, Cw721ReceiveMsg, Expiration};
 use cw721_base::msg::ExecuteMsg as CW721ExecuteMsg;
 
 use crate::msg::{LunaPunkExecuteMsg, MigrateMsg};
-use crate::state::{Cw721ExtendedContract, Extension, Metadata, Trait};
+use crate::state::{Cw721ExtendedContract};
+use cw721_metadata_onchain::{Extension, Metadata, Trait};
 
 use base64::encode;
 use std::convert::TryFrom;
@@ -579,7 +580,7 @@ fn generate_image(
     }
 
     let mut svg: String = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>".to_string();
-    svg.push_str("<style> :root { --color-brand-green: rgb(88,191,124); --color-brand-fade: rgb(45, 85, 176); --color-brand-blue: rgb(45, 85, 176); }");
+    svg.push_str("<style> :root { --color-brand-green: rgb(255,111,111); --color-brand-fade: rgb(45, 85, 176); --color-brand-blue: rgb(45, 85, 176); }");
     svg.push_str(".gradient__brand-green { stop-color: var(--color-brand-green); }");
     svg.push_str(".gradient__brand-fade { stop-color: var(--color-brand-fade); }");
     svg.push_str(".gradient__brand-blue { stop-color: var(--color-brand-blue); } </style>");
@@ -589,6 +590,7 @@ fn generate_image(
     svg.push_str("<stop offset='0' class='gradient__brand-blue' style='stop-opacity:1' ><animate attributeName='offset' values='0;0.8;0' dur='39s' repeatCount='indefinite' /></stop>");
     svg.push_str("<stop offset='0.2' class='gradient__brand-green' style='stop-opacity:0.9' ><animate attributeName='offset' values='0.2;1;0.2' dur='39s' repeatCount='indefinite' /></stop>");
     svg.push_str("<stop offset='0.4' class='gradient__brand-blue' style='stop-opacity:1' ><animate attributeName='offset' values='0.4;1.2;0.4' dur='39s' repeatCount='indefinite' /></stop>");
+
     // svg.push_str("<stop offset='0.2' class='gradient__brand-green' style='stop-opacity:1' ><animate attributeName='offset' values='0.2;0.4;0.2' dur='9s' repeatCount='indefinite' /></stop>");
     // svg.push_str("<stop offset='63%' class='gradient__brand-fade' style='stop-opacity:1'><animate attributeName='offset' values='0.3;0.6;0.3' dur='9s' repeatCount='indefinite' /></stop>");
     svg.push_str("<stop offset='1' class='gradient__brand-blue' style='stop-opacity:1'/>");
@@ -923,14 +925,18 @@ fn get_asset_name(
         match asset_type {
             "Base" => {
                 if asset_numeral < 92 { return "Green Alien"; }
-                else if asset_numeral < 180 { return "Red Alien"; }
-                else if asset_numeral < 268 { return "Yellow Alien"; }
-                else if asset_numeral < 356 { return "White Alien"; }
-                else if asset_numeral < 444 { return "Black Alien"; }
-                else if asset_numeral < 544 { return "Blue 0 Alien"; }
-                else if asset_numeral < 644 { return "Blue 1 Alien"; }
-                else if asset_numeral < 744 { return "Blue 2 Alien"; }
-                else if asset_numeral < 844 { return "Blue 3 Alien"; }
+                else if asset_numeral < 184 { return "Yellow Alien"; }
+                else if asset_numeral < 276 { return "White Alien"; }
+                else if asset_numeral < 368 { return "Black Alien"; }
+                else if asset_numeral < 458 { return "Red 0 Alien"; }
+                else if asset_numeral < 548 { return "Red 1 Alien"; }
+                else if asset_numeral < 638 { return "Red 2 Alien"; }
+                else if asset_numeral < 728 { return "Red 3 Alien"; }
+                else if asset_numeral < 819 { return "Red 4 Alien"; }
+                else if asset_numeral < 844 { return "Blue 0 Alien"; }
+                else if asset_numeral < 869 { return "Blue 1 Alien"; }
+                else if asset_numeral < 894 { return "Blue 2 Alien"; }
+                else if asset_numeral < 919 { return "Blue 3 Alien"; }
                 else if asset_numeral < 944 { return "Blue 4 Alien"; }
                 else if asset_numeral < 952 { return "0"; }
                 else if asset_numeral < 960 { return "1"; }
@@ -1025,14 +1031,18 @@ fn get_asset_name(
         match asset_type {
             "Base" => {
                 if asset_numeral < 92 { return "Green Alien"; }
-                else if asset_numeral < 180 { return "Red Alien"; }
-                else if asset_numeral < 268 { return "Yellow Alien"; }
-                else if asset_numeral < 356 { return "White Alien"; }
-                else if asset_numeral < 444 { return "Black Alien"; }
-                else if asset_numeral < 544 { return "Blue 0 Alien"; }
-                else if asset_numeral < 644 { return "Blue 1 Alien"; }
-                else if asset_numeral < 744 { return "Blue 2 Alien"; }
-                else if asset_numeral < 844 { return "Blue 3 Alien"; }
+                else if asset_numeral < 184 { return "Yellow Alien"; }
+                else if asset_numeral < 276 { return "White Alien"; }
+                else if asset_numeral < 368 { return "Black Alien"; }
+                else if asset_numeral < 458 { return "Red 0 Alien"; }
+                else if asset_numeral < 548 { return "Red 1 Alien"; }
+                else if asset_numeral < 638 { return "Red 2 Alien"; }
+                else if asset_numeral < 728 { return "Red 3 Alien"; }
+                else if asset_numeral < 819 { return "Red 4 Alien"; }
+                else if asset_numeral < 844 { return "Blue 0 Alien"; }
+                else if asset_numeral < 869 { return "Blue 1 Alien"; }
+                else if asset_numeral < 894 { return "Blue 2 Alien"; }
+                else if asset_numeral < 919 { return "Blue 3 Alien"; }
                 else if asset_numeral < 944 { return "Blue 4 Alien"; }
                 else if asset_numeral < 952 { return "0"; }
                 else if asset_numeral < 960 { return "1"; }

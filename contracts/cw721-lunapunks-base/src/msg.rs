@@ -1,14 +1,13 @@
-use cw721_base::MintMsg;
+use cw721_metadata_onchain::MintMsg;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use cosmwasm_std::{Binary, Coin};
 use cw721::Expiration;
-use cw721_base::msg::QueryMsg as CW721QueryMsg;
-use cw721_base::msg::ExecuteMsg as CW721ExecuteMsg;
+use cw721_metadata_onchain::QueryMsg as CW721QueryMsg;
+use cw721_metadata_onchain::ExecuteMsg as CW721ExecuteMsg;
 
-use crate::state::Extension;
-
+use cw721_metadata_onchain::Extension;
 
 #[derive(Serialize, Deserialize, Clone, Debug, JsonSchema)]
 pub struct MigrateMsg {}
@@ -66,8 +65,8 @@ pub enum LunaPunkExecuteMsg<T> {
 //     }
 // }
 
-impl From<LunaPunkExecuteMsg<Extension>> for CW721ExecuteMsg<Extension> {
-    fn from(msg: LunaPunkExecuteMsg<Extension>) -> CW721ExecuteMsg<Extension> {
+impl From<LunaPunkExecuteMsg<Extension>> for CW721ExecuteMsg {
+    fn from(msg: LunaPunkExecuteMsg<Extension>) -> CW721ExecuteMsg {
         match msg {
             LunaPunkExecuteMsg::TransferNft { recipient, token_id }
             => CW721ExecuteMsg::TransferNft { recipient, token_id },

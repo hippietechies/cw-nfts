@@ -1,3 +1,99 @@
+// admin: terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg
+
+// 5439: nft      - terra1f93qjgtpx497r8ftsskffv7l2g4gvv7shy50njwa54v3nknlc4nszd9q24
+// 5440: minter   - terra1haq2hzluxt748nnjwwunut5snjkf64gs4w3vm92p6h0xap2xxgsstzzvja
+// 5441: market   - terra1ydhwqkv544csene2q02kf2ln742z50t3yj5j96m9q59zvmrxeeaqz0n5gl
+// 5442: staking  - terra1cjgqxv8mn3cjlxn55c6ezs7fhhsnf2y7acqmtrfccgjyka5zjv5sl6p8ev
+
+
+// 5451: launchpad        - terra1fp4hrygfht28u2cv9zxkrnqzu07xvlarp307rmllrjzeejqzh8dsekd95w
+// 5455: launchpad nft    -
+// 5456: launchpad minter -
+// 5457: launchpad market -
+{
+  "burn_nft_contract": "terra1f93qjgtpx497r8ftsskffv7l2g4gvv7shy50njwa54v3nknlc4nszd9q24",
+  "staking_contract": "terra1cjgqxv8mn3cjlxn55c6ezs7fhhsnf2y7acqmtrfccgjyka5zjv5sl6p8ev",
+  "nft_code_id": "5452",
+  "minter_code_id": "5453",
+  "marketplace_code_id": "5454"
+}
+
+
+// minting 5440
+{
+  "whitelist_password": "lunapunks",
+  "public_mint_height": 0,
+  "price": 1000000,
+  "max_supply": 10000,
+  "max_mint": 100,
+  "mint_limit": 100,
+  "contract": "Lunatics",
+  "staking_contract": "terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg",
+  "nft_name": "LunaPunks",
+  "nft_description": "Luna Punks NFT Collectible, Onchain, Just in time generation token.",
+  "token_uri": "https://lunapunks.io/api/token/",
+  "image_ipfs": "https://lunapunks.io/api/image/",
+  "external_url": "https://lunapunks.io/",
+  "animation_url": "https://lunapunks.io/api/animation/",
+  "youtube_url": "https://lunapunks.io/api/youtube/"
+}
+
+
+// nft 5439
+{
+  "minter": "terra1haq2hzluxt748nnjwwunut5snjkf64gs4w3vm92p6h0xap2xxgsstzzvja",
+  "name": "LunaPunks",
+  "symbol": "LunaPunks"
+}
+
+// staking 5442
+{
+  "nft_contract": "terra1f93qjgtpx497r8ftsskffv7l2g4gvv7shy50njwa54v3nknlc4nszd9q24",
+  "owner": "terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg",
+  "validator": "terravaloper1qq6u2sm9n8e20sdjrdmytp0084jfry802gffmk"
+}
+
+
+// marketplace 2105
+{
+  "contract": "terra1f93qjgtpx497r8ftsskffv7l2g4gvv7shy50njwa54v3nknlc4nszd9q24",
+  "staking_contract": "terra1cjgqxv8mn3cjlxn55c6ezs7fhhsnf2y7acqmtrfccgjyka5zjv5sl6p8ev",
+  "royalty_fee": 400,
+  "royalty_wallet": "terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg"
+}
+
+// minter update config
+{
+  "update_config" :{
+    "config":{
+      "contract": "terra1f93qjgtpx497r8ftsskffv7l2g4gvv7shy50njwa54v3nknlc4nszd9q24",
+      "staking_contract": "terra1cjgqxv8mn3cjlxn55c6ezs7fhhsnf2y7acqmtrfccgjyka5zjv5sl6p8ev"
+   }
+  }
+}
+
+//launchpad
+{
+  "burn_nft_contract": "terra1qfy2nfr0zh70jyr3h4ns9rzqx4fl8rxpf09ytv",
+  "marketplace_code_id": "3",
+  "minter_code_id": "2",
+  "nft_code_id": "1",
+  "staking_contract": "terra14ayqtv6ck5w0u8slpgjp7wkvve9j066aqzgksn"
+}
+
+
+
+//staking
+{"release":{"release_funds":[{"denom":"uluna","amount":"500000"}]}}
+
+//minter
+{"multi_mint_on_behalf":{"quantity":1}}
+{"set_price":{"price":"1"}}
+
+
+
+
+
 
 // minter: 'terra178u6gmkvlwlxx7f24hpq0aznzvxlfdazdtxggy450pjmku2pasysaxs9s3', // 2106
 // nft: 'terra1un9k0vzym87zs64x2fnhslutyq3gu2n7l2ru9nfhjl952pef0d7spjh42j', // 2107
@@ -40,7 +136,7 @@
   "owner": "terra1qzw84hfrha4hjr4q4xsntqduk8lkjmdz2r5deg",
   "validator": "terravaloper1cevf3xwxm8zjhj7yrnjc0qy6y6ng98lxgxp79x"
 }
-
+terravaloper1qq6u2sm9n8e20sdjrdmytp0084jfry802gffmk
 
 // marketplace 2105
 {

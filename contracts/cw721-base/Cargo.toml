@@ -1,3 +1,5 @@
+cargo-features=["workspace-inheritance"]
+
 [package]
 name          = "cw721-base"
 description   = "Basic implementation cw721 NFTs"

@@ -1,3 +1,5 @@
+cargo-features=["workspace-inheritance"]
+
 [package]
 name          = "cw2981-royalties"
 description   = "Basic implementation of royalties for cw721 NFTs with token level royalties"

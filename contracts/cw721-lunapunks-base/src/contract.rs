@@ -1,6 +1,8 @@
 #[cfg(not(feature = "library"))]
 pub use crate::msg::{LunaPunkExecuteMsg, LunaPunkQueryMsg, MigrateMsg};
-pub use crate::state::{Cw721ExtendedContract,Extension};
+pub use crate::state::{Cw721ExtendedContract};
+use cw721_metadata_onchain::{Extension};
+
 use crate::execute::{mint, instantiate as instantiate_luna_punks_contract, release};
 use crate::query::{all_tokens, tokens, owner_tokens};
 
@@ -11,7 +13,7 @@ use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult}
 use cw721_base::{ContractError, InstantiateMsg};
 
 // version info for migration info
-const CONTRACT_NAME: &str = "crates.io:cw4-stake";
+const CONTRACT_NAME: &str = "crates.io:lunapunks-nft";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Note, you can use StdResult in some functions where you do not
@@ -33,7 +35,7 @@ pub fn instantiate(
   info: MessageInfo,
   msg: LunaPunkExecuteMsg<Extension>,
 ) -> Result<Response, ContractError> {
-  println!("execute:{:?}", msg);
+  // println!("execute:{:?}", msg);
   match msg {
       LunaPunkExecuteMsg::Mint(msg) => mint(deps, env, info, msg),
       LunaPunkExecuteMsg::Release { bids } => release(deps, env, info, bids),
@@ -47,7 +49,7 @@ pub fn instantiate(
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: LunaPunkQueryMsg) -> StdResult<Binary> {
-  println!("query:{:?}", msg);
+  // println!("query:{:?}", msg);
 
   match msg {
       // LunaPunkQueryMsg::StakingContract { } => to_binary(&staking_contract(deps)?),

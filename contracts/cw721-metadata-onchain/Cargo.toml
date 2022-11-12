@@ -1,3 +1,5 @@
+cargo-features=["workspace-inheritance"]
+
 [package]
 name          = "cw721-metadata-onchain"
 description   = "Example extending CW721 NFT to store metadata on chain"
