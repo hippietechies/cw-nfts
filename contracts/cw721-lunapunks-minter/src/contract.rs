@@ -54,10 +54,10 @@ pub fn migrate(
     // }
 
 
-    STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
-        state.price = 420000000u64;
-        Ok(state)
-    })?;
+    // STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
+    //     state.price = 420000000u64;
+    //     Ok(state)
+    // })?;
 
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
@@ -398,7 +398,7 @@ pub fn mint_on_behalf_multi(
 
     MINTED.save(deps.storage, &minter_addr, &(minted + quantity))?;
 
-    let amount_to_stake = price_total / 2;
+    let amount_to_stake = 100_000_000u128;
     let amount_to_earn = price_total - amount_to_stake;
 
     let balance_to_stake = BankMsg::Send {
