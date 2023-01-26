@@ -3,7 +3,7 @@ pub use crate::msg::{LunaPunkExecuteMsg, LunaPunkQueryMsg, MigrateMsg};
 pub use crate::state::{Cw721ExtendedContract};
 use cw721_metadata_onchain::{Extension};
 
-use crate::execute::{mint, instantiate as instantiate_luna_punks_contract, release};
+use crate::execute::{mint, instantiate as instantiate_luna_punks_contract, migrate as migrate_lp, release};
 use crate::query::{all_tokens, tokens, owner_tokens};
 
 use super::*;
@@ -67,9 +67,9 @@ pub fn query(deps: Deps, env: Env, msg: LunaPunkQueryMsg) -> StdResult<Binary> {
   }
 }
 
-// #[cfg_attr(not(feature = "library"), entry_point)]
-// pub fn migrate(deps: DepsMut, env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {
-//     let tract = Cw721ExtendedContract::default();//Cw721ExtendedContract::default();//Cw721Contract::<Extension, Empty>::default();
-//     tract.migrate(deps, env, msg)
-// }
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn migrate(deps: DepsMut, env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {
+    // let tract = Cw721ExtendedContract::default();//Cw721ExtendedContract::default();//Cw721Contract::<Extension, Empty>::default();
+    migrate_lp(deps, env, msg)
+}
 
