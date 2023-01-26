@@ -412,7 +412,7 @@ impl<'a> MarketContract<'a>
         let state = &self.state.load(deps.storage)?;
 
         Ok(Response::new()
-            // .add_message(self.get_revest_msg(state.staking_contract.to_string())?)
+            .add_message(self.get_revest_msg(state.staking_contract.to_string())?)
             .add_attribute("action", "ask_add_nft")
             .add_attribute("asker", info.sender)
             .add_attribute("token_id", token_id.to_string())
